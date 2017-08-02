@@ -2,9 +2,9 @@
 // @name         CoinigyHelper
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  try to take over the world!
-// @author       You
-// @match        https://www.coinigy.com/main/markets/*
+// @description  Coinigy Crypto Currencies Trader Exchanges Helper
+// @author       Romain de Wolff
+// @match        https://www.coinigy.com/*
 // @grant        none
 // ==/UserScript==
 
@@ -18,7 +18,12 @@
     // functions to manipulate the Coinigy UI
     // ****************************************************************
     function nextCurrency() {
-        $('.list-group-item.market_list_entry.market_list_entry_selected').next().click();
+        // if it's the last element from the list, display the first one
+        if ($('.list-group-item.market_list_entry.market_list_entry_selected').is($('.list-group-item.market_list_entry').last())){
+            $('.list-group-item.market_list_entry').first().click();
+        } else {
+            $('.list-group-item.market_list_entry.market_list_entry_selected').next().click();
+        }
     }
     function prevCurrency() {
         $('.list-group-item.market_list_entry.market_list_entry_selected').prev().click();
@@ -31,6 +36,7 @@
     // handle all the events
     // ****************************************************************
     function handleCoinigyKeydownEvent(evt) {
+        console.log('Event keycode:', evt.keyCode);
         // space key
         if (evt.keyCode == 32) {
             if (evt.shiftKey) {
@@ -55,6 +61,14 @@
             $('.intervals-list .item')[(evt.keyCode - 48)].click();
             // $($('iframe').get()[0].contentWindow.document)
             //                     $($('iframe').get()[0].contentWindow.document).
+        }
+        
+        // key UP or DOWN, zoom
+        if (evt.keyCode == 38) {
+            console.log('zoom it baby')
+            var e = jQuery.Event( "DOMMouseScroll",{delta: -650} );
+            // trigger an artificial DOMMouseScroll event with delta -650
+            $($('iframe').get()[0].contentWindow.document).trigger( e );
         }
     }
 
